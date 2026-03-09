@@ -1,4 +1,7 @@
 
+# Editor
+.vscode/
+
 # Azure Functions artifacts
 bin
 obj
