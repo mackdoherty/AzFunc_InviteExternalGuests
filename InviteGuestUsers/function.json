@@ -1,0 +1,12 @@
+{
+  "bindings": [
+    {
+      "name": "InputBlob",
+      "type": "blobTrigger",
+      "direction": "in",
+      "path": "guest-imports/{name}.txt",
+      "dataType": "binary",
+      "connection": "BLOB_STORAGE_CONNECTION"
+    }
+  ]
+}
