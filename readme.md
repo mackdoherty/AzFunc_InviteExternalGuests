@@ -18,9 +18,8 @@ Email addresses are expected to follow the `firstname.lastname@domain.com` forma
 |---|---|
 | `AzureWebJobsStorage` | Connection string for the Azure Storage account |
 | `BLOB_STORAGE_CONNECTION` | Connection string for the storage account containing the `guest-imports` container |
-| `GUEST_COMPANY_NAME` | Company name to set on invited guest users |
-| `INVITE_REDIRECT_URL` | URL guests are redirected to after accepting their invitation |
-| `GUEST_SPONSOR_ID` | (Optional) Object ID of the user to set as sponsor for invited guests |
+| `GUEST_COMPANY_NAME` | (Optional) Fallback company name if not specified in the input file |
+| `GUEST_SPONSOR_ID` | (Optional) Fallback sponsor object ID if not specified in the input file |
 
 ## Azure Setup
 
@@ -31,9 +30,14 @@ Email addresses are expected to follow the `firstname.lastname@domain.com` forma
 
 ## Input Format
 
-Plain text file, one email address per line:
+Plain text file with one email address per line. You can optionally specify `company` and `sponsor` as comment headers at the top of the file — these take precedence over the app settings:
 
 ```
+# company: Contoso Ltd
+# sponsor: 00000000-0000-0000-0000-000000000000
+
 john.smith@contoso.com
 jane.doe@contoso.com
 ```
+
+If the headers are omitted, the function falls back to the `GUEST_COMPANY_NAME` and `GUEST_SPONSOR_ID` app settings.

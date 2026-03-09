@@ -1,13 +1,20 @@
 param([byte[]] $InputBlob, $TriggerMetadata)
 
-# ── Environment variables ──────────────────────────────────────────────────
-$companyName = $env:GUEST_COMPANY_NAME
-$redirectUrl = $env:INVITE_REDIRECT_URL
-$sponsorId   = $env:GUEST_SPONSOR_ID
-
 # ── Parse blob content ─────────────────────────────────────────────────────
 $content = [System.Text.Encoding]::UTF8.GetString($InputBlob)
-$emails  = $content -split "\r?\n" | Where-Object { $_ -match '@' } | ForEach-Object { $_.Trim() }
+$lines   = $content -split "\r?\n" | ForEach-Object { $_.Trim() }
+
+# ── Read optional config headers from the file ─────────────────────────────
+# Supported headers (must appear before any email addresses):
+#   # company: Contoso Ltd
+#   # sponsor: 00000000-0000-0000-0000-000000000000
+$fileCompany = ($lines | Where-Object { $_ -match '^#\s*company\s*:\s*(.+)' } | Select-Object -First 1) -replace '^#\s*company\s*:\s*', ''
+$fileSponsor = ($lines | Where-Object { $_ -match '^#\s*sponsor\s*:\s*(.+)' } | Select-Object -First 1) -replace '^#\s*sponsor\s*:\s*', ''
+
+$companyName = if ($fileCompany) { $fileCompany } else { $env:GUEST_COMPANY_NAME }
+$sponsorId   = if ($fileSponsor) { $fileSponsor } else { $env:GUEST_SPONSOR_ID }
+
+$emails = $lines | Where-Object { $_ -match '@' }
 
 if ($emails.Count -eq 0) {
     Write-Host "No valid email addresses found in blob: $($TriggerMetadata.Name)"
@@ -55,7 +62,7 @@ foreach ($email in $emails) {
 
     $invitePayload = @{
         invitedUserEmailAddress = $email
-        inviteRedirectUrl       = $redirectUrl
+        inviteRedirectUrl       = "https://myapps.microsoft.com"
         sendInvitationMessage   = $false
         invitedUserDisplayName  = $displayName
         invitedUserType         = "Guest"
