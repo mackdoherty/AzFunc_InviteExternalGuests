@@ -26,7 +26,7 @@ Email addresses are expected to follow the `firstname.lastname@domain.com` forma
 - **Function App** — Consumption plan, PowerShell 7.4, Windows, System Assigned Managed Identity enabled
 - **Storage Account** — GPv2, with a container named `guest-imports`
 - **IAM — Storage Account** — Managed identity needs Storage Blob Data Contributor, Storage Queue Data Contributor, Storage Table Data Contributor
-- **IAM — Entra ID** — Managed identity needs `User.Invite.All`, `User.ReadWrite.All`, and `User-Sponsor.ReadWrite.All` Graph API application permissions
+- **IAM — Entra ID** — Managed identity needs `User.Invite.All` and `User.ReadWrite.All` Graph API application permissions
 
 ## Input Format
 
@@ -41,3 +41,4 @@ jane.doe@contoso.com
 ```
 
 If the headers are omitted, the function falls back to the `GUEST_COMPANY_NAME` and `GUEST_SPONSOR_ID` app settings.
+
